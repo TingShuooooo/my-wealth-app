@@ -1,15 +1,16 @@
-iimport streamlit as st
+import streamlit as st
 import pandas as pd
 
-# 網頁基礎設定
-st.set_page_config(page_title="億萬富豪の退休航道", layout="wide")
+# 1. 網頁基礎設定
+st.set_page_config(page_title="億萬富豪の退休航道 v5.5", layout="wide")
 
-# 套用深色高質感風格
+# 2. 套用深色高質感風格 CSS
 st.markdown("""
     <style>
     .main { background-color: #1A1C2C; color: white; }
-    /* 移除頂部不必要的間距，讓標題更緊湊 */
+    /* 移除頂部不必要的空隙 */
     .block-container { padding-top: 2rem; }
+    /* 按鈕樣式：橘底黑字，針對手機操作加高 */
     .stButton>button { 
         background-color: #F7931A; 
         color: black; 
@@ -20,14 +21,16 @@ st.markdown("""
         font-size: 22px !important; 
         border: none;
     }
+    /* 卡片式數據顯示 */
     .stMetric { background-color: #2D3047; padding: 15px; border-radius: 10px; border: 1px solid #4E5481; }
     div[data-testid="stExpander"] { background-color: #2D3047; border-radius: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
-# 標題：改用 subheader 確保與下方文字完全一樣大
+# 3. 頂部標題：使用 subheader 確保與下方階段規劃的字體一模一樣大
 st.subheader("🚀 億萬富豪の退休航道 💵")
 
+# 4. 金額格式化函數
 def format_wealth(amount):
     wan = amount / 10000
     if wan >= 10000:
@@ -36,7 +39,7 @@ def format_wealth(amount):
         return f"{yi} 億 {rem_wan:,} 萬" if rem_wan != 0 else f"{yi} 億"
     return f"{int(wan):,} 萬"
 
-# --- 基礎設定區 ---
+# 5. --- 基礎設定區 ---
 with st.expander("🛠 基礎設定與起始資產", expanded=True):
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
@@ -48,9 +51,8 @@ with st.expander("🛠 基礎設定與起始資產", expanded=True):
         b_rate = st.number_input("BTC 年報 (%)", value=28.0)
         init_b = st.number_input("BTC 起始資金", value=300000)
 
-# --- 階段投入區 ---
-# 這裡也是使用 subheader，現在上下兩個標題字體會完全一樣
-st.subheader("📅 階段性投入規劃")
+# 6. --- 階段投入區 (6 階段) ---
+st.subheader("📅 階段性投入規劃 (共 6 階段)")
 adj_data = []
 
 container = st.container()
@@ -78,7 +80,7 @@ with container:
             except:
                 pass
 
-# --- 計算按鈕 ---
+# 7. --- 計算按鈕與邏輯 ---
 st.write("---")
 if st.button("💰財富自由我來了🏆"):
     q_r = (1 + q_rate/100)**(1/12)-1
@@ -120,11 +122,13 @@ if st.button("💰財富自由我來了🏆"):
         })
         prev_total = grand
 
+    # 結算報告
     st.success(f"🎉 第 {total_yrs} 年航道結算結果✨")
     c1, c2, c3 = st.columns(3)
     c1.metric("總成本", format_wealth(total_cost))
     c2.metric("淨獲利", format_wealth(grand - total_cost))
     c3.metric("最終資產", format_wealth(grand))
 
+    # 詳細表格
     st.write("### 📈 歷年資產成長細節")
     st.dataframe(pd.DataFrame(results), use_container_width=True, hide_index=True)
