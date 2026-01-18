@@ -52,7 +52,7 @@ with st.expander("🛠 基礎設定與起始資產", expanded=True):
         init_b = st.number_input("BTC 起始資金", value=300000)
 
 # 6. --- 階段投入區 (6 階段) ---
-st.subheader("📅 階段性投入規劃 (共 6 階段)")
+st.subheader("📅 階段性投入規劃")
 adj_data = []
 
 container = st.container()
